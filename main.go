@@ -44,6 +44,7 @@ func main() {
 
 	// register handlers for api namespace
 	servMux.HandleFunc("POST /api/users", cfg.CreateUser)
+	servMux.HandleFunc("POST /api/login", cfg.LoginUser)
 
 	// configure server
 	server := http.Server{
@@ -62,5 +63,4 @@ func main() {
 		fmt.Printf("could not start server: %v", err)
 		os.Exit(1)
 	}
-
 }
