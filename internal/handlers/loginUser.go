@@ -41,7 +41,12 @@ func (cfg *ApiModel) LoginUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create refresh token
-	refreshToken, _ := auth.MakeRefreshToken()
+	refreshToken, err := auth.MakeRefreshToken()
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, "could not create refresh token")
+		return
+	}
+	// prepare params for storing refresh token in database
 	refreshExpires := time.Now().UTC().Add(60 * 24 * time.Hour)
 	params := database.CreateRefreshTokenParams{
 		Token:     refreshToken,
