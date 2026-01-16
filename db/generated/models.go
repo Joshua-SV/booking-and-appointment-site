@@ -5,10 +5,30 @@
 package generated
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
+
+type Appointment struct {
+	ID              uuid.UUID
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	UserID          uuid.UUID
+	AppointmentTime time.Time
+	Status          string
+	Notes           string
+}
+
+type RefreshToken struct {
+	Token     string
+	UserID    uuid.UUID
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	ExpiresAt time.Time
+	RevokedAt sql.NullTime
+}
 
 type User struct {
 	ID           uuid.UUID

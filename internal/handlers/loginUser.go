@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Joshua-SV/booking-and-appointment-site/db/generated"
 	"github.com/Joshua-SV/booking-and-appointment-site/internal/auth"
 	"github.com/Joshua-SV/booking-and-appointment-site/internal/utils"
 )
@@ -48,7 +49,7 @@ func (cfg *ApiModel) LoginUser(w http.ResponseWriter, r *http.Request) {
 	}
 	// prepare params for storing refresh token in database
 	refreshExpires := time.Now().UTC().Add(60 * 24 * time.Hour)
-	params := database.CreateRefreshTokenParams{
+	params := generated.CreateRefreshTokenParams{
 		Token:     refreshToken,
 		UserID:    dbUser.ID,
 		ExpiresAt: refreshExpires,
@@ -68,6 +69,5 @@ func (cfg *ApiModel) LoginUser(w http.ResponseWriter, r *http.Request) {
 		"updated_at":    dbUser.UpdatedAt.String(),
 		"token":         accessToken,
 		"refresh_token": refreshToken,
-		"is_chirpy_red": dbUser.IsChirpyRed,
 	})
 }
