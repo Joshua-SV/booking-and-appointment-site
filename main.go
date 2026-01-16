@@ -45,6 +45,9 @@ func main() {
 	// register handlers for api namespace
 	servMux.HandleFunc("POST /api/users", cfg.CreateUser)
 	servMux.HandleFunc("POST /api/login", cfg.LoginUser)
+	servMux.HandleFunc("POST /api/refresh", cfg.Refresh)
+	servMux.HandleFunc("POST /api/revoke", cfg.RevokeRefreshToken)
+	servMux.HandleFunc("PUT /api/users", cfg.ChangeEmailAndPassword)
 
 	// configure server
 	server := http.Server{

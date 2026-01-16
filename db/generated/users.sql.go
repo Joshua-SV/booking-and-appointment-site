@@ -71,6 +71,23 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	return i, err
 }
 
+const setEmailAndPassword = `-- name: SetEmailAndPassword :exec
+UPDATE users
+SET email = $2, password_hash = $3, updated_at = NOW()
+WHERE id = $1
+`
+
+type SetEmailAndPasswordParams struct {
+	ID           uuid.UUID
+	Email        string
+	PasswordHash string
+}
+
+func (q *Queries) SetEmailAndPassword(ctx context.Context, arg SetEmailAndPasswordParams) error {
+	_, err := q.db.ExecContext(ctx, setEmailAndPassword, arg.ID, arg.Email, arg.PasswordHash)
+	return err
+}
+
 const updateUserPassword = `-- name: UpdateUserPassword :one
 UPDATE users SET password_hash = $2, updated_at = NOW() WHERE email = $1 RETURNING id, created_at, updated_at, email, password_hash
 `
