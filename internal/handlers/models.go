@@ -11,8 +11,12 @@ import (
 type ApiModel struct {
 	db        *generated.Queries
 	devAccess string
-	key       string
-	polkaKey  string
+	serverKey string
+	apiKey    string
+}
+
+type AppointmentRequest struct {
+	AppointmentTime time.Time `json:"appointment_time"`
 }
 
 // declare struct to hold user info
@@ -33,10 +37,10 @@ func (a *ApiModel) SetDevAccess(devAccess string) {
 	a.devAccess = devAccess
 }
 
-func (a *ApiModel) SetKey(key string) {
-	a.key = key
+func (a *ApiModel) SetServerKey(serverKey string) {
+	a.serverKey = serverKey
 }
 
-func (a *ApiModel) SetPolkaKey(polkaKey string) {
-	a.polkaKey = polkaKey
+func (a *ApiModel) SetAPIKey(apiKey string) {
+	a.apiKey = apiKey
 }

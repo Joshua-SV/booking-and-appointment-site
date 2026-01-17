@@ -35,7 +35,7 @@ func (cfg *ApiModel) LoginUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create the JWT token string
-	accessToken, err := auth.CreateJWT(dbUser.ID, cfg.key, time.Hour) // 1 hour expires
+	accessToken, err := auth.CreateJWT(dbUser.ID, cfg.serverKey, time.Hour) // 1 hour expiration
 	if err != nil {
 		utils.RespondWithError(w, http.StatusForbidden, "could not create token")
 		return
@@ -48,7 +48,7 @@ func (cfg *ApiModel) LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// prepare params for storing refresh token in database
-	refreshExpires := time.Now().UTC().Add(60 * 24 * time.Hour)
+	refreshExpires := time.Now().UTC().Add(60 * 24 * time.Hour) // expires in 60 days
 	params := generated.CreateRefreshTokenParams{
 		Token:     refreshToken,
 		UserID:    dbUser.ID,

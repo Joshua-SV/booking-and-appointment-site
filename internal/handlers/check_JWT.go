@@ -18,7 +18,7 @@ func (cfg *ApiModel) CheckAccessToken(w http.ResponseWriter, r *http.Request) uu
 	}
 
 	// check access token
-	userID, err := auth.ValidateJWT(accessToken, cfg.key)
+	userID, err := auth.ValidateJWT(accessToken, cfg.serverKey)
 	if err != nil {
 		utils.RespondWithError(w, http.StatusUnauthorized, "invalid token")
 		return uuid.Nil

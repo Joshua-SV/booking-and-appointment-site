@@ -24,7 +24,7 @@ func (cfg *ApiModel) Refresh(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create new JWT token
-	jwtToken, err := auth.CreateJWT(user.ID, cfg.key, time.Hour)
+	jwtToken, err := auth.CreateJWT(user.ID, cfg.serverKey, time.Hour)
 	if err != nil {
 		utils.RespondWithError(w, http.StatusInternalServerError, "could not create access token")
 		return

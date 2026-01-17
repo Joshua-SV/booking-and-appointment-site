@@ -39,6 +39,8 @@ func main() {
 	cfg := handlers.ApiModel{}
 	cfg.SetDB(generated.New(db))
 
+	cfg.SetServerKey(os.Getenv("SERVER_SECRET_KEY"))
+
 	// declare a serve mux to handle enpoint routing
 	servMux := http.NewServeMux()
 

@@ -120,10 +120,10 @@ func GetAPIKey(headers http.Header) (string, error) {
 	}
 
 	// trim prefix
-	tokenStr := strings.TrimSpace(strings.TrimPrefix(val, prefix))
-	if tokenStr == "" {
+	keyStr := strings.TrimSpace(strings.TrimPrefix(val, prefix))
+	if keyStr == "" {
 		return "", errors.New("token missing after 'ApiKey '")
 	}
 
-	return tokenStr, nil
+	return keyStr, nil
 }
