@@ -17,6 +17,8 @@ type ApiModel struct {
 
 type AppointmentRequest struct {
 	AppointmentTime time.Time `json:"appointment_time"`
+	Status          string    `json:"status"`
+	Notes           string    `json:"notes"`
 }
 
 // declare struct to hold user info

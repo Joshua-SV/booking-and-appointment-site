@@ -38,7 +38,7 @@ func main() {
 	// declare api model with database connection
 	cfg := handlers.ApiModel{}
 	cfg.SetDB(generated.New(db))
-
+	// set server key for JWT signing
 	cfg.SetServerKey(os.Getenv("SERVER_SECRET_KEY"))
 
 	// declare a serve mux to handle enpoint routing
