@@ -23,11 +23,12 @@ type AppointmentRequest struct {
 
 // declare struct to hold user info
 type User struct {
-	ID        uuid.UUID `json:"id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Email     string    `json:"email"`
-	Password  string    `json:"password"`
+	ID          uuid.UUID `json:"id"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	Email       string    `json:"email"`
+	PhoneNumber string    `json:"phone_number"`
+	Password    string    `json:"password"`
 }
 
 // setter methods for api model

@@ -7,6 +7,7 @@ package generated
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -24,9 +25,17 @@ type CreateUserParams struct {
 	PasswordHash string
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+type CreateUserRow struct {
+	ID           uuid.UUID
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	Email        string
+	PasswordHash string
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error) {
 	row := q.db.QueryRowContext(ctx, createUser, arg.Email, arg.PasswordHash)
-	var i User
+	var i CreateUserRow
 	err := row.Scan(
 		&i.ID,
 		&i.CreatedAt,
@@ -37,8 +46,17 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
+const deleteAllUsers = `-- name: DeleteAllUsers :exec
+DELETE FROM users
+`
+
+func (q *Queries) DeleteAllUsers(ctx context.Context) error {
+	_, err := q.db.ExecContext(ctx, deleteAllUsers)
+	return err
+}
+
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, created_at, updated_at, email, password_hash FROM users WHERE email = $1
+SELECT id, created_at, updated_at, email, password_hash, phone_number FROM users WHERE email = $1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
@@ -50,12 +68,13 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.UpdatedAt,
 		&i.Email,
 		&i.PasswordHash,
+		&i.PhoneNumber,
 	)
 	return i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, created_at, updated_at, email, password_hash FROM users WHERE id = $1
+SELECT id, created_at, updated_at, email, password_hash, phone_number FROM users WHERE id = $1
 `
 
 func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
@@ -67,6 +86,7 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.UpdatedAt,
 		&i.Email,
 		&i.PasswordHash,
+		&i.PhoneNumber,
 	)
 	return i, err
 }
@@ -88,8 +108,24 @@ func (q *Queries) SetEmailAndPassword(ctx context.Context, arg SetEmailAndPasswo
 	return err
 }
 
+const setPhoneNumber = `-- name: SetPhoneNumber :exec
+UPDATE users
+SET phone_number = $2, updated_at = NOW()
+WHERE id = $1
+`
+
+type SetPhoneNumberParams struct {
+	ID          uuid.UUID
+	PhoneNumber string
+}
+
+func (q *Queries) SetPhoneNumber(ctx context.Context, arg SetPhoneNumberParams) error {
+	_, err := q.db.ExecContext(ctx, setPhoneNumber, arg.ID, arg.PhoneNumber)
+	return err
+}
+
 const updateUserPassword = `-- name: UpdateUserPassword :one
-UPDATE users SET password_hash = $2, updated_at = NOW() WHERE email = $1 RETURNING id, created_at, updated_at, email, password_hash
+UPDATE users SET password_hash = $2, updated_at = NOW() WHERE email = $1 RETURNING id, created_at, updated_at, email, password_hash, phone_number
 `
 
 type UpdateUserPasswordParams struct {
@@ -106,6 +142,7 @@ func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPassword
 		&i.UpdatedAt,
 		&i.Email,
 		&i.PasswordHash,
+		&i.PhoneNumber,
 	)
 	return i, err
 }

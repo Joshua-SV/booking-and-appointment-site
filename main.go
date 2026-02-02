@@ -40,6 +40,8 @@ func main() {
 	cfg.SetDB(generated.New(db))
 	// set server key for JWT signing
 	cfg.SetServerKey(os.Getenv("SERVER_SECRET_KEY"))
+	// set dev access key
+	cfg.SetDevAccess(os.Getenv("PLATFORM"))
 
 	// declare a serve mux to handle enpoint routing
 	servMux := http.NewServeMux()
@@ -50,6 +52,9 @@ func main() {
 	servMux.HandleFunc("POST /api/refresh", cfg.Refresh)
 	servMux.HandleFunc("POST /api/revoke", cfg.RevokeRefreshToken)
 	servMux.HandleFunc("PUT /api/users", cfg.ChangeEmailAndPassword)
+
+	// admin endpoints
+	servMux.HandleFunc("POST /admin/reset", cfg.Reset)
 
 	// configure server
 	server := http.Server{
