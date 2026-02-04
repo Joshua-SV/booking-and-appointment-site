@@ -9,8 +9,10 @@ import (
 
 	"github.com/Joshua-SV/booking-and-appointment-site/db/generated"
 	"github.com/Joshua-SV/booking-and-appointment-site/internal/handlers"
+	"github.com/Joshua-SV/booking-and-appointment-site/internal/pubsub"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 func main() {
@@ -42,6 +44,19 @@ func main() {
 	cfg.SetServerKey(os.Getenv("SERVER_SECRET_KEY"))
 	// set dev access key
 	cfg.SetDevAccess(os.Getenv("PLATFORM"))
+	// set rabbitmq url
+	cfg.SetRabbitmqURL(os.Getenv("RABBITMQ_URL"))
+
+	// connect to rabbitmq server
+	rabbitConn, err := amqp.Dial(cfg.GetRabbitmqURL())
+	if err != nil {
+		fmt.Printf("could not connect to rabbitmq server: %v", err)
+		os.Exit(1)
+	}
+	defer rabbitConn.Close()
+
+	// subscribe to appointment creation queue
+	err = pubsub.SubscribeJSON(rabbitConn, "direct_appointment_exch", "appointment_creation_queue", "appointment.created", pubsub.DurableQueue)
 
 	// declare a serve mux to handle enpoint routing
 	servMux := http.NewServeMux()

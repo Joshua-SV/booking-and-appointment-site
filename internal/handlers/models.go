@@ -9,10 +9,11 @@ import (
 )
 
 type ApiModel struct {
-	db        *generated.Queries
-	devAccess string
-	serverKey string
-	apiKey    string
+	db          *generated.Queries
+	devAccess   string
+	serverKey   string
+	apiKey      string
+	rabbitmqURL string
 }
 
 type AppointmentRequest struct {
@@ -46,4 +47,12 @@ func (a *ApiModel) SetServerKey(serverKey string) {
 
 func (a *ApiModel) SetAPIKey(apiKey string) {
 	a.apiKey = apiKey
+}
+
+func (a *ApiModel) SetRabbitmqURL(rabbitmqURL string) {
+	a.rabbitmqURL = rabbitmqURL
+}
+
+func (a *ApiModel) GetRabbitmqURL() string {
+	return a.rabbitmqURL
 }
